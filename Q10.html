@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
+        integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"
+        integrity="sha512-WMEKGZ7L5LWgaPeJtw9MBM4i5w5OSBlSjTjCtSnvFJGSVD26gE5+Td12qN5pvWXhuWaWcVwF++F7aqu9cvqP0A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <title>Weather Information</title>
+    <style>
+        body {
+            background-color: #f0faff;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .container {
+            margin-top: 5%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .input-group {
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 25px;
+            overflow: hidden;
+        }
+
+        .card {
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #4fc3f7, #00bcd4);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .weather-icon img {
+            width: 120px;
+            filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.2));
+        }
+
+        .weather-info span {
+            font-size: 1.4rem;
+            font-weight: 500;
+            display: block;
+            margin-top: 5px;
+            color: #fff;
+        }
+
+        .location-time {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            margin-bottom: 5px;
+        }
+
+        .temperature {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            margin: 15px 0;
+        }
+
+        input[type="text"] {
+            padding: 10px 20px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            border-radius: 25px;
+            width: 100%;
+            box-shadow: none;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="text"]::placeholder {
+            color: #aaa;
+        }
+
+        input[type="text"]:focus {
+            background-color: #e0f7fa;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form method="post">
+            <div class="input-group my-5">
+                <input type="text" name="cityName" id="cityName" class="form-control" placeholder="Enter City Name..."
+                    required>
+                <div class="input-group-append">
+                    <button type="button" class="btnbtn-primary" id="search" name="search">Get Weather Details</button>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <div class="card w-75 text-center d-none">
+                    <div class="card-body" id="weather">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    $("#search").click(function (e) {
+        e.preventDefault();
+        if ($("#cityName").val() != "") {
+            $.ajax({
+                type: "GET",
+                url: `https://weatherapi-com.p.rapidapi.com/current.json?q=${$("#cityName").val().trim()}`,
+                headers: {
+                    'X-RapidAPI-Key': 'f6e9b0aa7emshe26b2d490c954c1p1102fdjsn733b53e7767b',
+                    'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com'
+                },
+                success: function (response) {
+                    console.log(response);
+                    $("#weather").html(`
+                        <div class="location-time">
+                            <span>${response.location.name}, ${response.location.country}</span>
+                            <br>
+                            <span>${response.location.localtime}</span>
+                        </div>
+                        <div class="weather-icon my-3">
+                            <imgsrc="https:${response.current.condition.icon}" alt="${response.current.condition.text}">
+                        </div>
+                        <div class="temperature">${response.current.temp_c}°C</div>
+                        <div class="weather-info">
+                            <span><strong>Condition:</strong> ${response.current.condition.text}</span><br>
+                            <span><strong>Humidity:</strong> ${response.current.humidity}%</span><br>
+                            <span><strong>Wind Speed:</strong> ${response.current.wind_kph} kph</span><br>
+                            <span><strong>Feels Like:</strong> ${response.current.feelslike_c}°C</span>
+                        </div>
+                    `);
+                    $(".card").removeClass("d-none");
+                },
+                error: function (err) {
+                    console.log(err);
+                    alert(err.responseJSON.error.message);
+                }
+            })
+        } else {
+            alert("Please enter a city");
+            $(".card").addClass("d-none");
+        }
+    });
+</script>
+
+</html>

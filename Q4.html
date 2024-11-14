@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Slider</title>
+    <style>
+        /* styles.css */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .slider-container {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .slider {
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .sliderimg {
+            max-width: 100%;
+            height: auto;
+            display: none;
+        }
+        .navigation {
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="slider-container">
+        <div class="slider">
+            <img src="https://images.pexels.com/photos/45853/grey-crowned-crane-bird-crane-animal-45853.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Image 1" class="sliderimg">
+            <img src="https://images.pexels.com/photos/842711/pexels-photo-842711.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Image 2" class="sliderimg">
+            <img src="https://images.pexels.com/photos/1563356/pexels-photo-1563356.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Image 3" class="sliderimg">
+            
+            <!-- Add more images as needed -->
+        </div>
+        <div class="navigation">
+            <button id="prevBtn">Previous</button>
+            <button id="nextBtn">Next</button>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var currentIndex = 0;
+            var slides = $('.sliderimg');
+            var totalSlides = slides.length;
+            // Show the initial image
+            showSlide(currentIndex);
+            // Handle "Next" button click
+            $('#nextBtn').click(function () {
+                currentIndex = (currentIndex + 1) % totalSlides;
+                showSlide(currentIndex);
+            });
+            // Handle "Previous" button click
+            $('#prevBtn').click(function () {
+                currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                showSlide(currentIndex);
+            });
+            // Function to show the current slide
+            function showSlide(index) {
+                slides.hide();
+                slides.eq(index).show();
+            }
+        });
+    </script>
+</body>
+</html>
